@@ -1,5 +1,19 @@
-version: '3.8'
 services:
+  api:
+    container_name: trilha_api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      # A API se conecta ao banco usando o nome do serviço 'postgres_db' como host.
+      - ConnectionStrings__DefaultConnection=Host=postgres_db;Port=5432;Database=TodoAppDb;Username=root;Password=root
+      # Define o ambiente para a API escutar na porta 8080
+      - ASPNETCORE_URLS=http://+:8080
+    depends_on:
+      - postgres
+
   postgres:
     image: postgres:latest
     container_name: postgres_db

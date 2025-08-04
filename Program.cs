@@ -25,13 +25,12 @@ builder.Services.AddOpenApiDocument(options =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseOpenApi();
-    app.UseSwaggerUi();
-}
+app.UseOpenApi();
+app.UseSwaggerUi();
 
-app.UseHttpsRedirection();
+
+// Meu deploy na Azure é HTTP only
+// app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
