@@ -8,7 +8,7 @@ services:
       - "8080:8080"
     environment:
       # A API se conecta ao banco usando o nome do serviço 'postgres_db' como host.
-      - ConnectionStrings__DefaultConnection=Host=postgres_db;Port=5432;Database=TodoAppDb;Username=root;Password=root
+      - ConnectionStrings__ConexaoPadrao=Host=postgres_db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
       # Define o ambiente para a API escutar na porta 8080
       - ASPNETCORE_URLS=http://+:8080
     depends_on:
@@ -18,9 +18,9 @@ services:
     image: postgres:latest
     container_name: postgres_db
     environment:
-      POSTGRES_DB: TodoAppDb
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: root
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5433:5432"
     volumes:
