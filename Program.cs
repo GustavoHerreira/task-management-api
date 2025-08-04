@@ -4,6 +4,18 @@ using TrilhaApiDesafio.Context;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "cors_policy",
+        policy =>
+        {
+            policy.AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
+
 // Add services to the container.
 builder.Services.AddDbContext<OrganizadorContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("ConexaoPadrao")));
@@ -28,12 +40,19 @@ var app = builder.Build();
 app.UseOpenApi();
 app.UseSwaggerUi();
 
+app.UseCors("cors_policy");
+
 
 // Meu deploy na Azure é HTTP only
 // app.UseHttpsRedirection();
 
-app.UseAuthorization();
-
 app.MapControllers();
+
+// Pega o serviço do DbContext e aplica quaisquer migrações pendentes
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<OrganizadorContext>();
+    dbContext.Database.Migrate();
+}
 
 app.Run();
