@@ -57,16 +57,16 @@ Esse é o schema (model) de Tarefa, utilizado para passar para os métodos que e
 }
 ```
 
-## ☁️ A Jornada para a Nuvem: O Processo de Deploy
+## 🚀 A Jornada para a Nuvem: O Processo de Deploy
 Após completar os requisitos de código, o projeto foi levado para o próximo nível com o deploy em um ambiente de produção real na Azure.
 
-### Parte 1: Provisionando a Infraestrutura (VM - IaaS)
+### ☁️ Parte 1: Provisionando a Infraestrutura (VM - IaaS)
 Foi criada uma Máquina Virtual **Ubuntu Server 24.04 LTS** na região `Central US` para hospedar a aplicação. A segurança do acesso administrativo foi garantida pelo uso de Chaves SSH, e a firewall (NSG) foi configurada para permitir o tráfego público na porta HTTP (80).
 
-### Parte 2: Configurando o Banco de Dados Gerenciado (DB - PaaS)
+### 🗄️ Parte 2: Configurando o Banco de Dados Gerenciado (DB - PaaS)
 Para garantir a persistência segura dos dados, foi provisionado um Banco de Dados do Azure para PostgreSQL no modo "Servidor Flexível". A conexão foi configurada via Acesso Privado (Integração VNet), tornando o banco de dados inacessível a partir da internet pública e garantindo que apenas a VM da aplicação possa comunicar-se com ele através da rede interna da Azure.
 
-### Parte 3: Containerização e Deploy Final (Docker)
+### 📦 Parte 3: Containerização e Deploy Final (Docker)
 Com a infraestrutura pronta, o deploy da aplicação foi realizado:
 
 1. O código-fonte da API foi clonado do GitHub para a VM.
