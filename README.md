@@ -14,6 +14,20 @@ A aplicação está online e totalmente funcional. Pode testá-la ao vivo atrav�
 [Clique aqui para acessar a API na Azure](http://132.196.1.215/swagger/index.html#/Tarefa)
 > Observação: A aplicação roda em uma infraestrutura do nível gratuito da Azure. A primeira requisição pode levar alguns segundos para "acordar" os recursos.
 
+## 🛠️ Tech Stack
+
+O projeto foi construído com as tecnologias mais modernas e requisitadas do ecossistema .NET e de Cloud Computing.
+
+* 👨‍💻 **Linguagem e Framework**: .NET 9 (ASP.NET Core)
+* 🐘 **Banco de Dados**: PostgreSQL
+* 🗺️ **ORM**: Entity Framework Core 9
+* 🐳 **Containerização**: Docker & Docker Compose
+* 📖 **Documentação de API**: OpenAPI + NSwag (Swagger)
+* ☁️ **Cloud (IaaS)**: Azure Virtual Machines (Ubuntu)
+* 🔒 **Cloud (PaaS)**: Azure Database for PostgreSQL & Azure Virtual Network
+
+--- 
+
 ## 🏗️ Arquitetura da Solução na Nuvem
 
 A solução foi projetada seguindo o princípio de "defesa em profundidade", utilizando múltiplos recursos da Azure para garantir segurança, escalabilidade e manutenibilidade.
@@ -23,6 +37,7 @@ A solução foi projetada seguindo o princípio de "defesa em profundidade", uti
 2.  **Servidor de Aplicação (`Azure VM - IaaS`):** Uma Máquina Virtual Linux (Ubuntu) recebe as requisições permitidas pelo NSG. Dentro dela, a **API .NET roda isolada em um contentor Docker**, garantindo um ambiente de execução consistente e portátil.
 3.  **Rede Privada Segura (`Azure VNet`):** A comunicação entre a API e o Banco de Dados **não acontece pela internet pública**. Ambos os recursos estão localizados na mesma **Rede Virtual (VNet)**, comunicando-se de forma rápida e segura através da rede interna da Microsoft.
 4.  **Banco de Dados Gerenciado (`Azure DB for PostgreSQL - PaaS`):** O banco de dados foi configurado com **Acesso Privado**. Isto significa que ele **não possui um endereço de IP público** e é totalmente inacessível pela internet. Ele só aceita ligações que se originam de dentro da sua VNet, como a da nossa VM, tornando a camada de dados extremamente segura.
+
 
 ## 📝 Contexto do Desafio Original (DIO Bootcamp)
 O objetivo inicial do projeto era construir um sistema gerenciador de tarefas com um CRUD (Criar, Ler, Atualizar, Deletar) funcional.
