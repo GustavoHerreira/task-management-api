@@ -34,12 +34,13 @@ jobs:
           
       - name: Build and push Docker image
         run: |
-          docker build . -t ${{ secrets.ACR_LOGIN_SERVER }}/${{ github.repository_owner }}/${{ steps.checkout.outputs.repository }}:${{ github.sha }}
-          docker push ${{ secrets.ACR_LOGIN_SERVER }}/${{ github.repository_owner }}/${{ steps.checkout.outputs.repository }}:${{ github.sha }}
-      
+          IMAGE=${{ secrets.ACR_LOGIN_SERVER }}/${{ github.repository }}:${{ github.sha }}
+          docker build . -t $IMAGE
+          docker push $IMAGE
+        
       - name: Deploy to Azure Container Apps
         uses: azure/container-apps-deploy-action@v1
         with:
           containerAppName: ${{ secrets.ACA_NAME }}
           resourceGroup: ${{ secrets.ACA_RESOURCE_GROUP }}
-          imageToDeploy: ${{ secrets.ACR_LOGIN_SERVER }}/${{ github.repository_owner }}/${{ steps.checkout.outputs.repository }}:${{ github.sha }}
+          imageToDeploy: ${{ secrets.ACR_LOGIN_SERVER }}/${{ github.repository }}:${{ github.sha }}
