@@ -37,7 +37,7 @@ jobs:
           docker push ${{ secrets.ACR_LOGIN_SERVER }}/${{ github.repository }}:${{ github.sha }}
       
       - name: Deploy to Azure Container Apps
-        uses: azure/container-apps-deploy-actions@v1
+        uses: azure/container-apps-deploy-action@v1
         with:
           appName: ${{ secrets.ACA_NAME }}
           resourceGroup: ${{ secrets.ACA_RESOURCE_GROUP }}
