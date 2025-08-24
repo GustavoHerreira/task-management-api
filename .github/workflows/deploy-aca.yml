@@ -18,6 +18,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        id: checkout
         
       - name: Login to Azure
         uses: azure/login@v1
@@ -35,11 +36,10 @@ jobs:
         run: |
           docker build . -t ${{ secrets.ACR_LOGIN_SERVER }}/${{ github.repository_owner }}/${{ steps.checkout.outputs.repository }}:${{ github.sha }}
           docker push ${{ secrets.ACR_LOGIN_SERVER }}/${{ github.repository_owner }}/${{ steps.checkout.outputs.repository }}:${{ github.sha }}
-        id: checkout
       
       - name: Deploy to Azure Container Apps
         uses: azure/container-apps-deploy-action@v1
         with:
           containerAppName: ${{ secrets.ACA_NAME }}
           resourceGroup: ${{ secrets.ACA_RESOURCE_GROUP }}
-          imageToDeploy: ${{ secrets.ACR_LOGIN_SERVER }}/${{ github.repository }}:${{ github.sha }}
+          imageToDeploy: ${{ secrets.ACR_LOGIN_SERVER }}/${{ github.repository_owner }}/${{ steps.checkout.outputs.repository }}:${{ github.sha }}
