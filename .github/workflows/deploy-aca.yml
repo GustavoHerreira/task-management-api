@@ -7,9 +7,13 @@ name: Build and Deploy to Azure Container Apps
 # documentation.
 
 # Trigger
+# Nome do workflow de CI/CD
 on:
   push:
     branches: [ "main" ]
+
+env:
+  IMAGE_NAME: gustavoherreira/task-management-api
 
 jobs:
   build-and-deploy:
@@ -18,8 +22,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        id: checkout
-        
+
       - name: Login to Azure
         uses: azure/login@v1
         with:
@@ -31,16 +34,18 @@ jobs:
           login-server: ${{ secrets.ACR_LOGIN_SERVER }}
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
-          
+
       - name: Build and push Docker image
         run: |
-          IMAGE=${{ secrets.ACR_LOGIN_SERVER }}/${{ github.repository }}:${{ github.sha }}
+          IMAGE=${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          echo "Using image: $IMAGE"
           docker build . -t $IMAGE
           docker push $IMAGE
-        
+
       - name: Deploy to Azure Container Apps
         uses: azure/container-apps-deploy-action@v1
         with:
           containerAppName: ${{ secrets.ACA_NAME }}
           resourceGroup: ${{ secrets.ACA_RESOURCE_GROUP }}
-          imageToDeploy: ${{ secrets.ACR_LOGIN_SERVER }}/${{ github.repository }}:${{ github.sha }}
+          imageToDeploy: ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+
