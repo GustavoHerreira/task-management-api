@@ -6,16 +6,25 @@
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![Microsoft Azure](https://img.shields.io/badge/Microsoft_Azure-0078D4?style=for-the-badge&logo=microsoft-azure&logoColor=white)
 
+Este projeto é o motor por trás de um aplicativo de gerenciamento de tarefas. Trata-se de uma API de back-end robusta que oferece um CRUD completo, permitindo que uma interface de usuário (web ou mobile) possa facilmente criar, listar, atualizar e deletar tarefas. O sistema também inclui um controle de status para cada tarefa (`Pendente`, `Finalizado`), demonstrando a criação de um serviço web escalável, seguro e pronto para produção.
 
-Este projeto apresenta uma solução completa de back-end para um sistema de gerenciamento de tarefas. Nascido como um desafio de projeto do Bootcamp .NET da DIO/GFT, ele evoluiu para uma aplicação totalmente funcional com deploy realizado na Microsoft Azure, demonstrando um ciclo completo de desenvolvimento, containerização e publicação na nuvem. A arquitetura final utiliza **`Infraestrutura como Serviço (IaaS)`** para a aplicação (API) e **`Plataforma como Serviço (PaaS)`** para o banco de dados PostgreSQL.
+---
+Nascido como um desafio do **Bootcamp .NET da DIO**, demonstra a **evolução de uma arquitetura de nuvem**, migrando de uma abordagem tradicional `IaaS (Máquina Virtual)` para uma solução moderna, serverless e otimizada com `PaaS (Azure Container Apps)`.
 
-## 🚀 API em Produção!
-A aplicação está online e totalmente funcional. Pode testá-la ao vivo através da documentação interativa do Swagger:
-[Clique aqui para acessar a API na Azure](http://132.196.1.215/swagger/index.html#/Tarefa)
-> Observação: A aplicação roda em uma infraestrutura do nível gratuito da Azure. A primeira requisição pode levar alguns segundos para "acordar" os recursos.
+A versão inicial, utilizando uma VM, cumpriu os requisitos do desafio. No entanto, buscando otimização de custos, maior escalabilidade e alinhamento com as práticas de mercado, o projeto foi totalmente migrado para o Azure Container Apps. A nova arquitetura é inteiramente baseada em **Plataforma como Serviço (PaaS)**, tanto para a aplicação quanto para o banco de dados, refletindo um ambiente de produção mais robusto e eficiente.
+
+## 🚀 API em Produção! (Arquitetura Atual com Azure Container Apps)
+A nova versão da API está online, rodando em uma infraestrutura serverless, escalável e segura.
+[Clique aqui para acessar a API na Azure (ACA)](https://aca-dio-tarefas-api.happypebble-f5b88307.centralus.azurecontainerapps.io/swagger/index.html#/Tarefa)
+> Observação: A aplicação pode levar alguns segundos para responder na primeira requisição devido à "partida a frio" (cold start), onde o contêiner é iniciado sob demanda.
+
+## 🏛️ Versão Histórica (Arquitetura Original com VM)
+A versão original da API, hospedada em uma Máquina Virtual do Azure como parte do desafio inicial, foi desativada e arquivada para fins históricos.
+[Acesse o snapshot da API original via Web Archive](https://web.archive.org/web/20250824193241/http://132.196.1.215/swagger/index.html#/Tarefa)
+
+---
 
 ## 🛠️ Tech Stack
-
 O projeto foi construído com as tecnologias mais modernas e requisitadas do ecossistema .NET e de Cloud Computing.
 
 * 👨‍💻 **Linguagem e Framework**: .NET 9 (ASP.NET Core)
@@ -23,21 +32,56 @@ O projeto foi construído com as tecnologias mais modernas e requisitadas do eco
 * 🗺️ **ORM**: Entity Framework Core 9
 * 🐳 **Containerização**: Docker & Docker Compose
 * 📖 **Documentação de API**: OpenAPI + NSwag (Swagger)
-* ☁️ **Cloud (IaaS)**: Azure Virtual Machines (Ubuntu)
-* 🔒 **Cloud (PaaS)**: Azure Database for PostgreSQL & Azure Virtual Network
+* ☁️ **Cloud (PaaS/Serverless)**: Azure Container Apps, Azure Database for PostgreSQL & Azure Virtual Network
 
 --- 
 
-## 🏗️ Arquitetura da Solução na Nuvem
+## 🏗️ Evolução da Arquitetura na Nuvem
 
-A solução foi projetada seguindo o princípio de "defesa em profundidade", utilizando múltiplos recursos da Azure para garantir segurança, escalabilidade e manutenibilidade.
+### Arquitetura Atual (PaaS - Azure Container Apps)
 
-**O fluxo da arquitetura é o seguinte:**
-1.  **Firewall de Entrada (`Network Security Group`):** A primeira camada de segurança é o NSG associado à rede da VM. Ele atua como um firewall, permitindo o tráfego da `Internet` apenas na porta **HTTP (80)** e bloqueando todo o resto.
-2.  **Servidor de Aplicação (`Azure VM - IaaS`):** Uma Máquina Virtual Linux (Ubuntu) recebe as requisições permitidas pelo NSG. Dentro dela, a **API .NET roda isolada em um contentor Docker**, garantindo um ambiente de execução consistente e portátil.
-3.  **Rede Privada Segura (`Azure VNet`):** A comunicação entre a API e o Banco de Dados **não acontece pela internet pública**. Ambos os recursos estão localizados na mesma **Rede Virtual (VNet)**, comunicando-se de forma rápida e segura através da rede interna da Microsoft.
-4.  **Banco de Dados Gerenciado (`Azure DB for PostgreSQL - PaaS`):** O banco de dados foi configurado com **Acesso Privado**. Isto significa que ele **não possui um endereço de IP público** e é totalmente inacessível pela internet. Ele só aceita ligações que se originam de dentro da sua VNet, como a da nossa VM, tornando a camada de dados extremamente segura.
+A arquitetura atual é otimizada para escalabilidade, segurança e baixo custo operacional, utilizando serviços gerenciados do Azure.
 
+1. **Gateway de Entrada (`ACA Ingress`)**: O ponto de entrada é o Ingress gerenciado do próprio Azure Container Apps. Ele fornece um endpoint HTTPS público, terminação TLS e distribui o tráfego para os contêineres da aplicação.
+2. **Ambiente Serverless (`Azure Container Apps`)**: A API .NET roda em um contêiner Docker dentro de um ambiente serverless. O ACA gerencia automaticamente o dimensionamento (inclusive para zero, economizando custos), o balanceamento de carga e a saúde das réplicas.
+3. **Rede Privada Segura (`Azure VNet Integration`)**: O ambiente do Container Apps está integrado a uma Rede Virtual (VNet). Isso permite que a aplicação se comunique com o banco de dados de forma privada e segura, sem expor nenhum dos serviços à internet pública.
+4. **Banco de Dados Gerenciado (`Azure DB for PostgreSQL - PaaS`)**: O banco de dados continua com a configuração de Acesso Privado, sendo totalmente inacessível pela internet. Ele só aceita conexões da subnet integrada ao ACA, garantindo a máxima segurança para a camada de dados.
+
+### Arquitetura Original (`IaaS - VM`)
+A solução inicial foi projetada seguindo o princípio de "defesa em profundidade", utilizando uma combinação de IaaS e PaaS.
+
+1. **Firewall de Entrada (`Network Security Group`)**: A primeira camada de segurança era o NSG associado à rede da VM. Ele atuava como um firewall, permitindo o tráfego da Internet apenas na porta HTTP (80).
+2. **Servidor de Aplicação (`Azure VM - IaaS`)**: Uma Máquina Virtual Linux (Ubuntu) recebia as requisições. Dentro dela, a API .NET rodava isolada em um contentor Docker.
+3. **Rede Privada Segura (`Azure VNet`)**: A comunicação entre a API e o Banco de Dados acontecia através da mesma Rede Virtual (VNet).
+4. **Banco de Dados Gerenciado (`Azure DB for PostgreSQL - PaaS`)**: O banco de dados foi configurado com Acesso Privado, aceitando apenas conexões originadas de dentro da VNet.
+
+---
+
+## 🚀 A Jornada para a Nuvem: O Processo de Deploy
+### Novo Processo de Deploy (Azure Container Apps via Container Registry)
+O deploy na nova arquitetura é automatizado e segue as melhores práticas de CI/CD:
+1. **Containerização**: O Dockerfile é usado para construir a imagem da aplicação.
+2. **Publicação da Imagem**: A imagem Docker é enviada para um Container Registry (como o Azure Container Registry ou Docker Hub).
+3. **Deploy no ACA**: O Azure Container Apps é configurado para baixar a nova versão da imagem do registry e atualizar as réplicas da aplicação de forma transparente (zero downtime).
+
+### Processo de Deploy Original (VM via SSH & Docker)
+
+O deploy na arquitetura original foi um processo manual, dividido em três grandes etapas. A criação da infraestrutura foi **documentada em detalhes em repositórios dedicados**, servindo como guias completos do processo.
+
+1. **Provisionando a Infraestrutura (VM - IaaS)**
+A primeira etapa envolveu a criação de uma Máquina Virtual Ubuntu na Azure, incluindo a configuração de redes (VNet), regras de segurança (NSG) e acesso via chaves SSH.
+
+> 📄 **Para um guia detalhado, com screenshots e explicações passo a passo, acesse o repositório dedicado: [Guia de Deploy - Azure VM](https://github.com/GustavoHerreira/azure-vm-deploy-dio-challenge)**
+
+2. **Configurando o Banco de Dados Gerenciado (DB - PaaS)**
+Em seguida, o Banco de Dados do Azure para PostgreSQL foi provisionado e configurado para acesso privado, garantindo a comunicação segura apenas de dentro da VNet.
+
+> 🐘 **O passo a passo completo para a configuração do banco de dados está disponível em: [Guia de Setup - Azure PostgreSQL](https://github.com/GustavoHerreira/azure-db-deploy-dio-challenge)**
+
+3. **Deploy Final da Aplicação (Docker)**
+Com a infraestrutura pronta, o deploy final foi realizado conectando-se à VM via SSH, instalando Docker e iniciando a aplicação com `docker compose`, injetando a ConnectionString como variável de ambiente.
+
+---
 
 ## 📝 Contexto do Desafio Original (DIO Bootcamp)
 O objetivo inicial do projeto era construir um sistema gerenciador de tarefas com um CRUD (Criar, Ler, Atualizar, Deletar) funcional.
@@ -72,25 +116,8 @@ Esse é o schema (model) de Tarefa, utilizado para passar para os métodos que e
 }
 ```
 
-## 🚀 A Jornada para a Nuvem: O Processo de Deploy
-Após completar os requisitos de código, o projeto foi levado para o próximo nível com o deploy em um ambiente de produção real na Azure.
+---
 
-### ☁️ Parte 1: Provisionando a Infraestrutura (VM - IaaS)
-Foi criada uma Máquina Virtual **Ubuntu Server 24.04 LTS** na região `Central US` para hospedar a aplicação. A segurança do acesso administrativo foi garantida pelo uso de Chaves SSH, e a firewall (NSG) foi configurada para permitir o tráfego público na porta HTTP (80).
-
-### 🗄️ Parte 2: Configurando o Banco de Dados Gerenciado (DB - PaaS)
-Para garantir a persistência segura dos dados, foi provisionado um Banco de Dados do Azure para PostgreSQL no modo "Servidor Flexível". A conexão foi configurada via Acesso Privado (Integração VNet), tornando o banco de dados inacessível a partir da internet pública e garantindo que apenas a VM da aplicação possa comunicar-se com ele através da rede interna da Azure.
-
-### 📦 Parte 3: Containerização e Deploy Final (Docker)
-Com a infraestrutura pronta, o deploy da aplicação foi realizado:
-
-1. O código-fonte da API foi clonado do GitHub para a VM.
-2. O Docker e o Docker Compose [via repositório oficial](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository) foram instalados no servidor.
-3. A aplicação foi iniciada com o comando docker compose, utilizando um ficheiro `docker-compose.azure.yml` específico para produção que:
-   - Constrói a imagem Docker da API.
-   - Expõe a porta 80.
-   - Injeta a ConnectionString do banco de dados do Azure como uma variável de ambiente (mantendo os segredos fora do código-fonte).
-  
 ## 🐳 Como Executar Localmente
 
 Este projeto está preparado para rodar facilmente em um ambiente de desenvolvimento local usando Docker.
