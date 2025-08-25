@@ -54,6 +54,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 // Redirect user to /swagger
-app.MapGet("/", () => Results.Redirect("/swagger"));
+app.MapGet("/", () => Results.Redirect("/swagger"))
+    .ExcludeFromDescription(); // Exclude from Swagger UI
 
 app.Run();

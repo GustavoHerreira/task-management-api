@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Login to Azure
-        uses: azure/login@v1
+        uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
@@ -30,11 +30,11 @@ jobs:
           password: ${{ secrets.ACR_PASSWORD }}
 
       - name: Build and push Docker image
-        run: |
-          IMAGE=${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-          echo "Using image: $IMAGE"
-          docker build . -t $IMAGE
-          docker push $IMAGE
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
 
       - name: Deploy to Azure Container Apps
         uses: azure/container-apps-deploy-action@v1
