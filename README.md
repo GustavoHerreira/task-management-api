@@ -4,19 +4,40 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-![Microsoft Azure](https://img.shields.io/badge/Microsoft_Azure-0078D4?style=for-the-badge&logo=microsoft-azure&logoColor=white)
+![CI/CD](https://img.shields.io/badge/CI%2FCD-Automated-blue?style=for-the-badge&logo=githubactions&logoColor=white)
+![Azure ACA](https://img.shields.io/badge/Deploy-Azure%20Container%20Apps-0078D4?style=for-the-badge&logo=azure&logoColor=white)
+
 
 Este projeto é o motor por trás de um aplicativo de gerenciamento de tarefas. Trata-se de uma API de back-end robusta que oferece um CRUD completo, permitindo que uma interface de usuário (web ou mobile) possa facilmente criar, listar, atualizar e deletar tarefas. O sistema também inclui um controle de status para cada tarefa (`Pendente`, `Finalizado`), demonstrando a criação de um serviço web escalável, seguro e pronto para produção.
 
 ---
 Nascido como um desafio do **Bootcamp .NET da DIO**, demonstra a **evolução de uma arquitetura de nuvem**, migrando de uma abordagem tradicional `IaaS (Máquina Virtual)` para uma solução moderna, serverless e otimizada com `PaaS (Azure Container Apps)`.
 
-A versão inicial, utilizando uma VM, cumpriu os requisitos do desafio. No entanto, buscando otimização de custos, maior escalabilidade e alinhamento com as práticas de mercado, o projeto foi totalmente migrado para o Azure Container Apps. A nova arquitetura é inteiramente baseada em **Plataforma como Serviço (PaaS)**, tanto para a aplicação quanto para o banco de dados, refletindo um ambiente de produção mais robusto e eficiente.
+A versão inicial, utilizando uma VM, cumpriu os requisitos do desafio. No entanto, buscando otimização de custos, maior escalabilidade e alinhamento com as práticas de mercado, o projeto foi totalmente migrado para o Azure Container Apps. A nova arquitetura é inteiramente baseada em **Plataforma como Serviço (PaaS)**, tanto para a aplicação quanto para o banco de dados e o deploy é **automatizado** via GitHub Actions, integrando CI/CD diretamente ao Azure, refletindo um ambiente de produção mais robusto e eficiente.
+
 
 ## 🚀 API em Produção! (Arquitetura Atual com Azure Container Apps)
 A nova versão da API está online, rodando em uma infraestrutura serverless, escalável e segura.
 [Clique aqui para acessar a API na Azure (ACA)](https://aca-dio-tarefas-api.happypebble-f5b88307.centralus.azurecontainerapps.io/swagger/index.html#/Tarefa)
 > Observação: A aplicação pode levar alguns segundos para responder na primeira requisição devido à "partida a frio" (cold start), onde o contêiner é iniciado sob demanda.
+
+---
+
+## 📦 CI/CD Pipeline
+O fluxo de deploy foi modernizado e hoje segue as melhores práticas:
+
+1. **Commit & Push (branch `main`)**  
+   Qualquer alteração enviada para a branch principal dispara automaticamente o pipeline no GitHub Actions.
+2. **Build da Imagem**  
+   O pipeline cria uma nova imagem Docker da aplicação.
+3. **Push para o Azure Container Registry (ACR)**  
+   A imagem é versionada com o hash do commit e enviada para o ACR.
+4. **Deploy Automático para o Azure Container Apps (ACA)**  
+   O GitHub Actions aciona a ação de deploy, atualizando a aplicação em produção sem downtime.
+
+📄 Workflow de CI/CD: [`deploy-aca.yml`](.github/workflows/deploy-aca.yml)
+
+---
 
 ## 🏛️ Versão Histórica (Arquitetura Original com VM)
 A versão original da API, hospedada em uma Máquina Virtual do Azure como parte do desafio inicial, foi desativada e arquivada para fins históricos.
