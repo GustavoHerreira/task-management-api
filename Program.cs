@@ -42,9 +42,7 @@ app.UseSwaggerUi();
 
 app.UseCors("cors_policy");
 
-
-// Meu deploy na Azure é HTTP only
-// app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.MapControllers();
 
@@ -54,5 +52,8 @@ using (var scope = app.Services.CreateScope())
     var dbContext = scope.ServiceProvider.GetRequiredService<OrganizadorContext>();
     dbContext.Database.Migrate();
 }
+
+// Redirect user to /swagger
+app.MapGet("/", () => Results.Redirect("/swagger"));
 
 app.Run();
