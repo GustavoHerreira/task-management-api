@@ -1,13 +1,7 @@
 # Nome do workflow de CI/CD
 name: Build and Deploy to Azure Container Apps
 
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
 # Trigger
-# Nome do workflow de CI/CD
 on:
   push:
     branches: [ "main" ]
@@ -48,4 +42,3 @@ jobs:
           containerAppName: ${{ secrets.ACA_NAME }}
           resourceGroup: ${{ secrets.ACA_RESOURCE_GROUP }}
           imageToDeploy: ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-
